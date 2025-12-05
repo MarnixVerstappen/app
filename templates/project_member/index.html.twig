@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Team Samenstellen{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Project Team: {{ project.title }}</h2>
+            <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">Terug</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Iemand toevoegen</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_row(form.user) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.vurisRole) }}
+                        </div>
+                        {{ form_row(form.save) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Huidige Leden</h5>
+                    </div>
+                    <table class="table table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Rol</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for member in members %}
+                            <tr>
+                                <td>{{ member.user.firstname }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ member.vurisRole }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <small class="text-muted">Verwijderen</small>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center p-3">Nog niemand in dit team.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nieuw Project{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Nieuw Project Starten</h1>
+        <div class="card p-4 mt-3">
+            {# Dit zorgt dat het formulier getoond wordt #}
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -5,33 +5,79 @@
 {% block body %}
     <div class="container mt-5">
 
-        <div class="row mb-4">
-            <div class="col-12">
-                <h1 class="display-5 text-dark">Welcome back, <span style="color: #E86E12;">{{ user_firstname }}</span>!</h1>
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 text-dark">
+                    Welcome back, <span style="color: #E86E12;">{{ app.user.firstname }}</span>!
+                </h1>
                 <p class="text-muted">
                     Huidige rechten:
                     {% for role in app.user.roles %}
                         {% if role != 'ROLE_USER' %}
-                            <span class="badge bg-secondary">{{ role|split('_')[1] }}</span>
+                            <span class="badge bg-secondary">{{ role|replace({'ROLE_': ''}) }}</span>
                         {% endif %}
                     {% endfor %}
                 </p>
-                <p class="text-muted">Select a tool below to get started.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <p class="text-muted mb-1">Vandaag: {{ "now"|date("d-m-Y") }}</p>
             </div>
         </div>
 
-        <div class="row">
+        <hr class="mb-5">
 
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body text-center">
-                        <div class="mb-3" style="font-size: 3rem;"><i class="bi bi-folder"></i></div>
-                        <h4 class="card-title">Excel Importer</h4>
-                        <p class="card-text text-muted">Upload and view Vuris project files.</p>
-                        <a href="{{ path('app_excel') }}" class="btn btn-outline-primary w-100">Open Tool</a>
+        <h4 class="mb-3 text-muted">Lopende Projecten</h4>
+        <div class="row mb-5">
+            {% for project in projects %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100 border-0" style="transition: transform 0.2s;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title fw-bold" style="color: #003B5C;">{{ project.title }}</h5>
+                                <span class="badge bg-light text-dark border">
+                                    {{ project.projectTasks|length }} Taken
+                                </span>
+                            </div>
+                            <p class="card-text text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i> Start: {{ project.startDate ? project.startDate|date('d-m-Y') : 'Niet ingesteld' }}<br>
+                                <i class="bi bi-people me-1"></i> Team: {{ project.projectMembers|length }} leden
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0 pt-0 pb-3">
+                            <a href="{{ path('app_project_show', {id: project.id}) }}" class="btn btn-outline-primary w-100">
+                                Project Openen
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-light border text-center py-4">
+                        Nog geen lopende projecten. Start er hieronder eentje!
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h4 class="mb-3 text-muted">Tools & Acties</h4>
+        <div class="row">
+
+            {% if is_granted('ROLE_VERANTWOORDELIJK') %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100 border-0">
+                        <div class="card-body text-center">
+                            <div class="mb-3" style="font-size: 3rem; color: #E86E12;">
+                                <i class="bi bi-folder-plus"></i>
+                            </div>
+                            <h4 class="card-title">Nieuw Project</h4>
+                            <p class="card-text text-muted">Start een project en upload de Vuris Excel.</p>
+                            <a href="{{ path('app_project_new') }}" class="btn btn-primary w-100" style="background-color: #E86E12; border: none;">
+                                Start Project
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}
                 <div class="col-md-4 mb-4">
@@ -39,8 +85,8 @@
                         <div class="card-body text-center">
                             <div class="mb-3" style="font-size: 3rem;">⚙️</div>
                             <h4 class="card-title text-warning-emphasis">Admin Settings</h4>
-                            <p class="card-text text-muted">Manage users and system configurations.</p>
-                            <button class="btn btn-warning w-100">Manage Users</button>
+                            <p class="card-text text-muted">Beheer gebruikers en instellingen.</p>
+                            <button class="btn btn-warning w-100">Gebruikers Beheren</button>
                         </div>
                     </div>
                 </div>
@@ -49,10 +95,12 @@
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100 border-0">
                     <div class="card-body text-center">
-                        <div class="mb-3" style="font-size: 3rem;"><i class="bi bi-person-fill"></i></div>
-                        <h4 class="card-title">My Profile</h4>
-                        <p class="card-text text-muted">Change your password or settings.</p>
-                        <a href="{{ path('app_logout') }}" class="btn btn-outline-danger w-100">Log Out</a>
+                        <div class="mb-3" style="font-size: 3rem; color: #003B5C;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <h4 class="card-title">Mijn Profiel</h4>
+                        <p class="card-text text-muted">Ingelogd als {{ app.user.firstname }}.</p>
+                        <a href="{{ path('app_logout') }}" class="btn btn-outline-danger w-100">Uitloggen</a>
                     </div>
                 </div>
             </div>
