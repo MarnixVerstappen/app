@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Raadplegen Portaal{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-white p-4" style="background-color: #198754;">
+                <h2>R - Raadplegen</h2>
+                <p class="mb-0">U wordt vooraf geraadpleegd en geeft advies.</p>
+            </div>
+            <div class="card-body p-5">
+                <h4>Uw Taken</h4>
+                <ul>
+                    <li>Input leveren voor besluiten</li>
+                    <li>Expertise delen</li>
+                    <li>Risico's signaleren</li>
+                </ul>
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-success mt-3">Terug naar Dashboard</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

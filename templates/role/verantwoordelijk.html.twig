@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Verantwoordelijk Portaal{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-white p-4" style="background-color: #d9534f;"> <h2>V - Verantwoordelijk</h2>
+                <p class="mb-0">U bent eindverantwoordelijk en geeft goedkeuring.</p>
+            </div>
+            <div class="card-body p-5">
+                <h4>Uw Taken</h4>
+                <ul>
+                    <li>Projectplannen goedkeuren</li>
+                    <li>Eindresultaten beoordelen</li>
+                    <li>Budgetten beheren</li>
+                </ul>
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary mt-3">Terug naar Dashboard</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

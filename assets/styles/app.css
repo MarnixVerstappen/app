@@ -1,3 +1,58 @@
-body {
-    background-color: skyblue;
+:root {
+    --corporate-blue: #003B5C;
+    --corporate-orange: #E86E12;
+    --bg-gradient-start: #f4f7f6;
+    --bg-gradient-end: #dfe4ea;
 }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* We hebben de 'display: flex' en 'height: 100vh' WEGGEHAALD */
+    /* Zodat de pagina weer normaal van boven naar beneden werkt */
+}
+
+/* Stijl voor de kaarten */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Login Specifieke Stijl (zodat die wel mooi blijft) */
+.login-wrapper {
+    min-height: 80vh; /* Zorgt voor hoogte */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 10px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.login-header {
+    background-color: var(--corporate-blue);
+    padding: 40px 30px;
+    text-align: center;
+    color: white;
+}
+.login-header h1 { margin: 0; font-size: 24px; text-transform: uppercase; }
+.login-header p { margin: 5px 0 0; font-size: 14px; opacity: 0.9; }
+.login-body { padding: 40px; }
+
+.btn-login {
+    background-color: var(--corporate-orange);
+    color: white;
+    width: 100%;
+    height: 50px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.btn-login:hover { background-color: #d15b00; }

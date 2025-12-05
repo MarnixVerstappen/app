@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Informeren Portaal{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-dark p-4" style="background-color: #ffc107;">
+                <h2>I - Informeren</h2>
+                <p class="mb-0">U wordt geïnformeerd over de besluiten en voortgang.</p>
+            </div>
+            <div class="card-body p-5">
+                <h4>Uw Overzicht</h4>
+                <ul>
+                    <li>Besluitenlijst inzien</li>
+                    <li>Voortgangsrapportages lezen</li>
+                    <li>Op de hoogte blijven van mijlpalen</li>
+                </ul>
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-warning mt-3">Terug naar Dashboard</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

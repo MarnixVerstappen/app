@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Support Portaal{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-white p-4" style="background-color: #6c757d;">
+                <h2>S - Support</h2>
+                <p class="mb-0">U verleent ondersteuning en helpt bij de uitvoering.</p>
+            </div>
+            <div class="card-body p-5">
+                <h4>Uw Taken</h4>
+                <ul>
+                    <li>Facilitaire ondersteuning</li>
+                    <li>Administratieve hulp</li>
+                    <li>Middelen beschikbaar stellen</li>
+                </ul>
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary mt-3">Terug naar Dashboard</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

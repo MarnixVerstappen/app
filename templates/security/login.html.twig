@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inloggen - Vuris{% endblock %}
+
+{% block body %}
+    <div class="login-wrapper">
+
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Mijn Woondiensten</h1>
+                <p>Vuris Beveiligde Omgeving</p>
+            </div>
+
+            <div class="login-body">
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger text-center mb-4" style="font-size: 14px;">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-bold small text-muted">VOORNAAM</label>
+                        <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" placeholder="Bijv. Marnix" autocomplete="username" required autofocus>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold small text-muted">WACHTWOORD</label>
+                        <input type="password" name="_password" id="password" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button class="btn-login" type="submit">Inloggen</button>
+
+                    <div class="text-center mt-3" style="font-size: 12px; color: #999;">
+                        &copy; 2024 Vuris Woondiensten
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Excel Import{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-4" style="max-width: 95%;">
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4" style="border: none;">
+                    <div class="card-header text-white" style="background-color: #003B5C;">
+                        <h4 class="mb-0"><i class="bi bi-folder"></i> Vuris Excel Importer</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label">Selecteer je Vuris Bestand (.xls .xlsx of .xlsm)</label>
+                                <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xlsm, .xls" required>
+                            </div>
+                            <button type="submit" class="btn text-white w-100" style="background-color: #E86E12;">
+                                Importeer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if sheetsData is not empty %}
+            <div class="card shadow-sm" style="border: none;">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Bestandsinhoud</h5>
+                    <small class="text-muted">Klik op tekst om te bewerken</small>
+                </div>
+                <div class="card-body p-0">
+
+                    <ul class="nav nav-tabs px-3 pt-3" id="excelTabs" role="tablist">
+                        {% for sheetName, data in sheetsData %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {% if loop.first %}active{% endif %}"
+                                        id="tab-{{ loop.index }}"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#content-{{ loop.index }}"
+                                        type="button"
+                                        role="tab">
+                                    {{ sheetName }}
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="tab-content p-3 border-top-0" id="excelTabsContent">
+                        {% for sheetName, rows in sheetsData %}
+                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+                                 id="content-{{ loop.index }}"
+                                 role="tabpanel">
+
+                                <div class="table-responsive" style="max-height: 75vh; overflow: auto;">
+                                    <table class="table table-bordered table-sm table-hover" style="font-size: 11px;">
+                                        <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                                        {% if rows|length > 0 %}
+                                            <tr>
+                                                {% for cell in rows|first %}
+                                                    <th style="background-color: #e9ecef; vertical-align: top; min-width: 50px;">
+                                                        {{ cell }}
+                                                    </th>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endif %}
+                                        </thead>
+                                        <tbody>
+                                        {% for row in rows|slice(1) %}
+                                            <tr>
+                                                {% for cell in row %}
+
+                                                    {# --- HIER BEGINT DE KLEUR LOGICA --- #}
+                                                    {% set cellVal = cell|trim %} {# Haal spaties weg voor de check #}
+                                                    {% set bgStyle = 'background-color: white;' %}
+                                                    {% set textStyle = 'color: black;' %}
+
+                                                    {% if cellVal == 'V' %}
+                                                        {% set bgStyle = 'background-color: #ffc000;' %} {# Donker Geel #}
+                                                    {% elseif cellVal == 'U' %}
+                                                        {% set bgStyle = 'background-color: #ffffff;' %} {# Wit #}
+                                                    {% elseif cellVal == 'R' %}
+                                                        {% set bgStyle = 'background-color: #92d050;' %} {# Groen #}
+                                                        {% set textStyle = 'color: white;' %}             {# Witte tekst voor leesbaarheid #}
+                                                    {% elseif cellVal == 'I' %}
+                                                        {% set bgStyle = 'background-color: #00b0f0;' %} {# Blauw #}
+                                                    {% elseif cellVal == 'S' %}
+                                                        {% set bgStyle = 'background-color: #ffff00;' %} {# Licht Geel/Support #}
+                                                    {% elseif cellVal == 'Procesmanagement' %}
+                                                        {% set bgStyle = 'background-color: #41b9b9;' %} {# Licht Geel/Support #}
+                                                    {% elseif cellVal == 'Bewonerszaken' %}
+                                                        {% set bgStyle = 'background-color: #a71a75;' %} {# Licht Geel/Support #}
+                                                    {% elseif cellVal == 'KPI' %}
+                                                        {% set bgStyle = 'background-color: #2f5496;' %} {# Licht Geel/Support #}
+                                                    {% elseif cellVal == 'Milestone' %}
+                                                        {% set bgStyle = 'background-color: #8eaadb;' %} {# Licht Geel/Support #}
+                                                    {% elseif cellVal == 'm' %}
+                                                        {% set bgStyle = 'background-color: #8eaadb;' %} {# Licht Geel/Support #}
+                                                    {% endif %}
+
+                                                    {# ----------------------------------- #}
+
+                                                    <td contenteditable="true"
+                                                        style="{{ bgStyle }} {{ textStyle }}
+                                                                white-space: normal;
+                                                                word-wrap: break-word;
+                                                                max-width: 200px;
+                                                                min-width: 40px;
+                                                                vertical-align: top;
+                                                                text-align: center;"> {{ cell }}
+                                                    </td>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
