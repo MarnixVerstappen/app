@@ -22,21 +22,21 @@ class Project
     private ?\DateTime $startDate = null;
 
     /**
-     * @var Collection<int, ProjectTask>
-     */
-    #[ORM\OneToMany(targetEntity: ProjectTask::class, mappedBy: 'project')]
-    private Collection $projectTasks;
-
-    /**
      * @var Collection<int, ProjectMember>
      */
     #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'project', orphanRemoval: true)]
     private Collection $projectMembers;
 
+    /**
+     * @var Collection<int, Sheet>
+     */
+    #[ORM\OneToMany(targetEntity: Sheet::class, mappedBy: 'project', orphanRemoval: true)]
+    private Collection $sheets;
+
     public function __construct()
     {
-        $this->projectTasks = new ArrayCollection();
         $this->projectMembers = new ArrayCollection();
+        $this->sheets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -69,36 +69,6 @@ class Project
     }
 
     /**
-     * @return Collection<int, ProjectTask>
-     */
-    public function getProjectTasks(): Collection
-    {
-        return $this->projectTasks;
-    }
-
-    public function addProjectTask(ProjectTask $projectTask): static
-    {
-        if (!$this->projectTasks->contains($projectTask)) {
-            $this->projectTasks->add($projectTask);
-            $projectTask->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProjectTask(ProjectTask $projectTask): static
-    {
-        if ($this->projectTasks->removeElement($projectTask)) {
-            // set the owning side to null (unless already changed)
-            if ($projectTask->getProject() === $this) {
-                $projectTask->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, ProjectMember>
      */
     public function getProjectMembers(): Collection
@@ -122,6 +92,36 @@ class Project
             // set the owning side to null (unless already changed)
             if ($projectMember->getProject() === $this) {
                 $projectMember->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sheet>
+     */
+    public function getSheets(): Collection
+    {
+        return $this->sheets;
+    }
+
+    public function addSheet(Sheet $sheet): static
+    {
+        if (!$this->sheets->contains($sheet)) {
+            $this->sheets->add($sheet);
+            $sheet->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSheet(Sheet $sheet): static
+    {
+        if ($this->sheets->removeElement($sheet)) {
+            // set the owning side to null (unless already changed)
+            if ($sheet->getProject() === $this) {
+                $sheet->setProject(null);
             }
         }
 

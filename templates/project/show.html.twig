@@ -1,104 +1,120 @@
+{# templates/project/show.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Project: {{ project.title }}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Make it look like Excel */
+        .excel-table {
+            border-collapse: collapse;
+            font-family: Calibri, sans-serif;
+            font-size: 14px;
+        }
+        .excel-table th, .excel-table td {
+            border: 1px solid #dcdcdc;
+            padding: 4px 8px;
+            min-width: 60px;
+            white-space: nowrap; /* Prevent wrapping like real Excel */
+        }
+        /* The Header Row (A, B, C) */
+        .excel-header {
+            background-color: #f8f9fa;
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+        }
+        /* The Index Column (1, 2, 3) */
+        .excel-index {
+            background-color: #f8f9fa;
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+            width: 40px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
+        <h1>{{ project.title }}</h1>
 
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-            <div>
-                <h1 class="h3" style="color: #003B5C;">{{ project.title }}</h1>
-                <span class="text-muted"><i class="bi bi-calendar-event me-1"></i> Startdatum: {{ project.startDate ? project.startDate|date('d-m-Y') : 'Niet ingesteld' }}</span>
-            </div>
-            <div>
-                {# Knop naar team beheer #}
-                <a href="{{ path('app_project_members', {'id': project.id}) }}" class="btn btn-outline-primary me-2">
-                    <i class="bi bi-people me-1"></i> Team Beheren
-                </a>
-                <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Terug</a>
-            </div>
-        </div>
+        <ul class="nav nav-tabs" id="excelTabs" role="tablist">
+            {% for data in sheetsData %}
+                <li class="nav-item">
+                    <button
+                            class="nav-link {{ loop.first ? 'active' : '' }}"
+                            data-bs-toggle="tab"
+                            data-bs-target="#sheet-{{ data.entity.id }}"
+                    >
+                        {{ data.entity.title }}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
 
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #003B5C;">
-                        <h5 class="mb-0">Project Taken</h5>
-                        <span class="badge bg-light text-dark">{{ project.projectTasks|length }} taken</span>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                            <tr>
-                                <th style="width: 50%;">Omschrijving</th>
-                                <th>Fase</th>
-                                <th>Status</th>
-                                <th class="text-end">Actie</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for task in project.projectTasks %}
+        <div class="tab-content p-3 border border-top-0 bg-white">
+            {% for data in sheetsData %}
+                <div class="tab-pane fade {{ loop.first ? 'show active' : '' }}" id="sheet-{{ data.entity.id }}">
+
+                    {% if data.maxRow == 0 %}
+                        <div class="alert alert-warning">Empty Sheet</div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="excel-table">
+                                <thead>
                                 <tr>
-                                    <td>{{ task.description }}</td>
-                                    <td>{{ task.phase|default('-') }}</td>
-                                    <td>
-                                        {% if task.status == 'Open' %}
-                                            <span class="badge bg-secondary">Open</span>
-                                        {% elseif task.status == 'Gereed' %}
-                                            <span class="badge bg-success">Gereed</span>
-                                        {% else %}
-                                            <span class="badge bg-warning text-dark">{{ task.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-outline-secondary">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">
-                                        Er zijn nog geen taken geïmporteerd voor dit project.
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                                    <th class="excel-index"></th>
 
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-light">
-                        <h6 class="mb-0 fw-bold">Project Team</h6>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for member in project.projectMembers %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ member.user.firstname }}
-                                <span class="badge rounded-pill
-                                {% if member.vurisRole == 'V' %}bg-warning text-dark
-                                {% elseif member.vurisRole == 'U' %}bg-secondary
-                                {% elseif member.vurisRole == 'R' %}bg-success
-                                {% elseif member.vurisRole == 'I' %}bg-info text-dark
-                                {% else %}bg-light text-dark border{% endif %}">
-                                {{ member.vurisRole }}
-                            </span>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item text-muted small">Nog geen teamleden.</li>
-                        {% endfor %}
-                    </ul>
-                    <div class="card-body">
-                        <a href="{{ path('app_project_members', {'id': project.id}) }}" class="btn btn-sm w-100 btn-outline-primary">
-                            Leden toevoegen / wijzigen
-                        </a>
-                    </div>
+                                    {% for colLetter in data.headers %}
+                                        <th class="excel-header">{{ colLetter }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for r in 1..data.maxRow %}
+                                    <tr>
+                                        <td class="excel-index">{{ r }}</td>
+
+                                        {% for c in 1..data.headers|length %}
+
+                                            {# 1. Initialize variables for this specific cell #}
+                                            {% set cell = data.grid[r][c] ?? null %}
+                                            {% set cellStyle = '' %}
+
+                                            {# 2. Build the CSS style string if the cell exists #}
+                                            {% if cell %}
+                                                {# Bold #}
+                                                {% if cell.bold %}
+                                                    {% set cellStyle = cellStyle ~ 'font-weight: bold;' %}
+                                                {% endif %}
+
+                                                {# Text Color (prepend # because you stored raw hex) #}
+                                                {% if cell.color %}
+                                                    {% set cellStyle = cellStyle ~ 'color: #' ~ cell.color ~ ';' %}
+                                                {% endif %}
+
+                                                {# Background Fill #}
+                                                {% if cell.fill %}
+                                                    {% set cellStyle = cellStyle ~ 'background-color: #' ~ cell.fill ~ ';' %}
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {# 3. Render the TD #}
+                                            <td style="{{ cellStyle }}">
+                                                {% if cell %}
+                                                    {{ cell.value }}
+                                                {% endif %}
+                                            </td>
+
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
-            </div>
+            {% endfor %}
         </div>
-
     </div>
 {% endblock %}

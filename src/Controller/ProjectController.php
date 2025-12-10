@@ -6,6 +6,7 @@ use App\Entity\Project;
 use App\Entity\ProjectTask;
 use App\Form\ProjectType;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,11 +69,46 @@ class ProjectController extends AbstractController
     #[Route('/project/{id}', name: 'app_project_show')]
     public function show(Project $project): Response
     {
-        // We halen het project op. Symfony haalt via de relatie automatisch
-        // alle taken ($project->getProjectTasks()) en leden ($project->getProjectMembers()) op.
+        // We need to prepare a "View Model" for each sheet
+        $sheetsData = [];
+
+        foreach ($project->getSheets() as $sheet) {
+            $grid = [];
+            $maxRow = 0;
+            $maxCol = 0;
+
+            foreach ($sheet->getCells() as $cell) {
+                // Convert "B2" -> Column "B", Row 2
+                [$colStr, $rowIndex] = Coordinate::coordinateFromString($cell->getCoordinate());
+
+                // Convert "B" -> 2 (integer index)
+                $colIndex = Coordinate::columnIndexFromString($colStr);
+
+                // Populate the grid: grid[row][col] = Cell Entity
+                $grid[$rowIndex][$colIndex] = $cell;
+
+                // Track boundaries
+                if ($rowIndex > $maxRow) $maxRow = $rowIndex;
+                if ($colIndex > $maxCol) $maxCol = $colIndex;
+            }
+
+            // Generate headers (A, B, C...) up to the max column
+            $headers = [];
+            for ($c = 1; $c <= $maxCol; $c++) {
+                $headers[$c] = Coordinate::stringFromColumnIndex($c);
+            }
+
+            $sheetsData[] = [
+                'entity' => $sheet,
+                'grid'   => $grid,
+                'maxRow' => $maxRow,
+                'headers'=> $headers,
+            ];
+        }
 
         return $this->render('project/show.html.twig', [
             'project' => $project,
+            'sheetsData' => $sheetsData,
         ]);
     }
 }

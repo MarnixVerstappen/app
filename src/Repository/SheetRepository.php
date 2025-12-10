@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\ProjectTask;
+use App\Entity\Sheet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ProjectTask>
+ * @extends ServiceEntityRepository<Sheet>
  */
-class ProjectTaskRepository extends ServiceEntityRepository
+class SheetRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ProjectTask::class);
+        parent::__construct($registry, Sheet::class);
     }
 
     //    /**
-    //     * @return ProjectTask[] Returns an array of ProjectTask objects
+    //     * @return Sheet[] Returns an array of Sheet objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
+    //            ->orderBy('s.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ProjectTask
+    //    public function findOneBySomeField($value): ?Sheet
     //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()
